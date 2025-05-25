@@ -75,7 +75,7 @@ class Puzzle(models.Model):
 
     class Meta:
         db_table = 'chess_client_puzzle'
-        managed = True  # Important! Tell Django that we created this table manually
+        managed = False  # Important! Tell Django that we created this table manually
 
 
 class PuzzleAttempt(models.Model):
@@ -92,7 +92,7 @@ class PuzzleAttempt(models.Model):
 
     class Meta:
         db_table = 'chess_client_puzzle_attempt'
-        managed = True
+        managed = False
         unique_together = ('puzzle', 'player', 'attempt_number')
 
     def determine_rating(self):
@@ -109,18 +109,18 @@ class PuzzleAttempt(models.Model):
 
 class FSRSMemory(models.Model):
     id = models.CharField(primary_key=True, max_length=36)
-    player_username = models.ForeignKey('Player', on_delete=models.CASCADE, to_field='username', db_column='player_username', null=True, blank=True)
+    player_username = models.ForeignKey('Player', on_delete=models.CASCADE, to_field='username', db_column='player_username')
     puzzle_id = models.ForeignKey('Puzzle', on_delete=models.CASCADE, to_field='id', db_column='puzzle_id')
     difficulty = models.FloatField(default=2.0)
     stability = models.FloatField(default=0.5)
     last_review_date = models.DateTimeField(null=True, blank=True)
     next_review_date = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
 
     class Meta:
         db_table = 'chess_client_fsrs_memory'
-        managed = True
+        managed = False
         unique_together = ('player_username', 'puzzle_id')
 
     def calculate_retrievability(self):
